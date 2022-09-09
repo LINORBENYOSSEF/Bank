@@ -18,7 +18,7 @@ class Authentication(object):
         if self.current_account is not None:
             raise AssertionError('account logged in already')
 
-        account = self._database.find_one(Account, Account.account_number, account_number)
+        account = self._database.find_one(Account, 'account_number', account_number)
         if account is None:
             raise KeyError("No such account!")
 

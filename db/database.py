@@ -1,4 +1,4 @@
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Optional
 from pymongo import MongoClient
 
 from .data import Adapter
@@ -24,5 +24,9 @@ class Database(object):
         results = collection.find()
         return self._adapter.dict_list_to_obj(list(results), data_type)
 
-    def find_one(self, data_type: Type[T], column: Column, value) -> T:
-        pass
+    def find_one(self, data_type: Type[T], column: str, value) -> Optional[T]:
+        collection = self._db.get_collection(data_type.__name__)
+        result = collection.find_one({column: value})
+        if result is None:
+            return None
+        return self._adapter.dict_to_obj(result, data_type)

@@ -4,9 +4,10 @@ from .base import Model, Column
 
 
 class Transaction(Model):
-    dest_account = Column('Account')
+    dest_account = Column(int)
     amount = Column(float)
     datetime = Column(datetime)
+    direction = Column(str)
 
 
 class Account(Model):

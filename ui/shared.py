@@ -31,5 +31,5 @@ class TopFrame(QFrame):
         self._hello_label.setText(text)
 
     def set_default_welcome_text(self, authentication: Authentication):
-        self.set_welcome_text('Account: ' + authentication.current_account.account_number)
+        self.set_welcome_text(f"Account: {authentication.current_account.account_number}")
 

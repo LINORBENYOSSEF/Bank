@@ -25,7 +25,6 @@ class LoginDisplay(Display):
 
     def prepare_show(self):
         self._account_number_field.clear()
-        self._password_field.clear()
         self._error_field.setText('')
 
     def _create_form(self):
@@ -57,7 +56,7 @@ class LoginDisplay(Display):
 
     def _login(self):
         try:
-            account_number = self._account_number_field.text()
+            account_number = int(self._account_number_field.text())
 
             self._authentication.login(account_number)
             self._error_field.setText('')
