@@ -7,6 +7,7 @@ from db.authentication import Authentication
 from db.database import Database
 from ui.accountview import AccountDisplay
 from ui.login import LoginDisplay
+from ui.newtransactionview import NewTransactionDisplay
 from ui.window import MainWindow
 
 
@@ -15,7 +16,8 @@ def main():
     authentication = Authentication(db)
 
     app = QApplication(sys.argv)
-    mainmenu = lambda: AccountDisplay(authentication)
+    newtrans = lambda: NewTransactionDisplay(db, authentication)
+    mainmenu = lambda: AccountDisplay(authentication, newtrans)
     login = lambda: LoginDisplay(authentication, mainmenu)
 
     window = MainWindow(authentication)

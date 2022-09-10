@@ -1,10 +1,10 @@
 from typing import Callable, List
 
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import QFormLayout, QLineEdit, QLabel, QVBoxLayout, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QFormLayout, QLineEdit, QLabel, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton
 
+from consts import LABEL_STYLE, BUTTON_SIZE_3
 from db.authentication import Authentication
-from consts import LABEL_STYLE
 from model.account import Transaction
 from ui.shared import TopFrame
 from ui.window import Display
@@ -12,19 +12,25 @@ from ui.window import Display
 
 class AccountDisplay(Display):
 
-    def __init__(self, authentication: Authentication):
+    def __init__(self, authentication: Authentication, newtrans_view: Callable[[], Display]):
         super().__init__()
 
         self._authentication = authentication
+        self._newtrans_view = newtrans_view
 
         self._top = TopFrame(self.on_logout)
         account_data = self._create_account_data()
         self._transaction_history_layout = QTableWidget()
 
+        self.newtrans_button = QPushButton('New Transaction')
+        self.newtrans_button.setFixedSize(BUTTON_SIZE_3)
+        self.newtrans_button.clicked.connect(self._newtrans)
+
         root_layout = QVBoxLayout()
         root_layout.addWidget(self._top, alignment=Qt.AlignTop)
         root_layout.addLayout(account_data)
-        root_layout.addWidget(self._transaction_history_layout, alignment=Qt.AlignTop)
+        root_layout.addWidget(self._transaction_history_layout, alignment=Qt.AlignCenter)
+        root_layout.addWidget(self.newtrans_button, alignment=Qt.AlignBottom)
         self.setLayout(root_layout)
 
     def prepare_show(self):
@@ -70,7 +76,10 @@ class AccountDisplay(Display):
         for row in range(len(transactions)):
             transaction = transactions[row]
             self._transaction_history_layout.setItem(row, 0, QTableWidgetItem(transaction.direction))
-            str_datetime = transaction.datetime.strftime('%d/%m/%Y, %H:%M:%S')
+            str_datetime = transaction.datetime.strftime('%d/%m/%Y %H:%M:%S')
             self._transaction_history_layout.setItem(row, 1, QTableWidgetItem(str_datetime))
             self._transaction_history_layout.setItem(row, 2, QTableWidgetItem(str(transaction.dest_account)))
             self._transaction_history_layout.setItem(row, 3, QTableWidgetItem(str(transaction.amount)))
+
+    def _newtrans(self):
+        self.on_next.emit(self._newtrans_view)

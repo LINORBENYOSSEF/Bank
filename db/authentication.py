@@ -12,7 +12,10 @@ class Authentication(object):
 
     @property
     def current_account(self) -> Optional[Account]:
-        return self._logged_account
+        if self._logged_account is None:
+            return None
+
+        return self._database.find_one(Account, 'account_number', self._logged_account)
 
     def login(self, account_number: int) -> Account:
         if self.current_account is not None:
@@ -22,7 +25,7 @@ class Authentication(object):
         if account is None:
             raise KeyError("No such account!")
 
-        self._logged_account = account
+        self._logged_account = account_number
         return account
 
     def logout(self):
