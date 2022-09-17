@@ -1,11 +1,12 @@
 from http import HTTPStatus
 
 from flask import Blueprint, jsonify, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from app_db import db
 from model.models import Flight
 from model.schemas import FlightSchema
+from db.operations import book_flight as db_book_flight
 
 flights_api = Blueprint('flights_api', __name__)
 
@@ -41,3 +42,14 @@ def create_flight():
     flight = schema.load(data)
 
     return jsonify(schema.dump(flight)), HTTPStatus.CREATED
+
+
+@flights_api.route('/<flight_id>/book/', methods=["POST"])
+@login_required
+def book_flight(flight_id):
+    flight = db.find_one(Flight, 'id', flight_id)
+    if flight is None:
+        return 'No such flight', HTTPStatus.NOT_FOUND
+
+    db_book_flight(db, current_user, flight)
+    return '', HTTPStatus.OK

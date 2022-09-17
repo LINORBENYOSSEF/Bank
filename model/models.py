@@ -4,12 +4,6 @@ from flask_login import UserMixin
 from .base import Model, Column
 
 
-class User(UserMixin, Model):
-    id = Column(str)
-    username = Column(str)
-    password = Column(str)
-
-
 class Plane(Model):
     manufacturer = Column(str)
     model = Column(str)
@@ -20,24 +14,35 @@ class Airline(Model):
     name = Column(str)
 
 
-class PassengerBooking(Model):
-    passenger_id = Column(str)
-    flight_id = Column(str)
-
-
-class Passenger(Model):
-    id = Column(str)
-    name = Column(str)
-    bookings = Column(PassengerBooking, is_many=True)
-
-
 class Location(Model):
     code = Column(str)
     city = Column(str)
     country = Column(str)
 
 
+class User(UserMixin, Model):
+    class Passenger(Model):
+        class Booking(Model):
+            flight_id = Column(str)
+            paid = Column(float)
+            airline = Column(Airline)
+            departure = Column(Location)
+            destination = Column(Location)
+
+        first_name = Column(str)
+        last_name = Column(str)
+        bookings = Column(Booking, is_many=True)
+
+    id = Column(str)
+    username = Column(str)
+    password = Column(str)
+    passenger_info = Column(Passenger)
+
+
 class Flight(Model):
+    class Passenger(Model):
+        id = Column(str)
+
     id = Column(str)
     airline = Column(Airline)
     plane = Column(Plane)

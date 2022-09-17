@@ -29,12 +29,15 @@ class Adapter(object):
             return self.dict_list_to_obj(data, obj_type)
         return self.dict_to_obj(data, obj_type)
 
-    def obj_to_dict(self, data: T) -> Dict:
+    def obj_to_dict(self, data: T, data_type=None) -> Dict:
         if isinstance(data, dict):
             return data
 
+        if data_type is None:
+            data_type = data.__class__
+
         result = dict()
-        fields = Model.get_columns(data.__class__)
+        fields = Model.get_columns(data_type)
         for name, field_type in fields:
             value = getattr(data, name)
             if isinstance(value, Model):

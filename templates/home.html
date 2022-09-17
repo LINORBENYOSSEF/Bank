@@ -57,7 +57,14 @@ $(document).ready(function(){
                 <h5>Ticket</h5>
                 <input type="text" class="form-control" name="price-field" readonly>
             </div>
+            {% if login is defined %}
+            <button type="submit" class="btn btn-primary mb-2" onclick="bookFlight()">Book</button>
+            {% else %}
             <button type="submit" class="btn btn-primary mb-2" disabled="disabled">Book</button>
+            <div class="d-flex justify-content-center links">
+                Sign in to book flights &nbsp; <a href="/loging">Sign In</a>
+            </div>
+            {% endif %}
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -3,6 +3,7 @@ import uuid
 from app_db import db
 from model.models import *
 
+print(db.get_all(User))
 print(db.get_all(Flight))
 
 """

@@ -1,3 +1,5 @@
+import uuid
+
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -36,9 +38,16 @@ def register():
 def register_post():
     username = request.form.get('username')
     password = request.form.get('password')
+    first_name = request.form.get('first-name')
+    last_name = request.form.get('last-name')
 
     # noinspection PyArgumentList
-    new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
+    new_user = User(
+        id=str(uuid.uuid4()),
+        username=username,
+        password=generate_password_hash(password, method='sha256'),
+        passenger_info=User.Passenger(first_name=first_name, last_name=last_name, bookings=[])
+    )
     db.add(new_user)
 
     login_user(new_user)

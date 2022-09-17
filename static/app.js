@@ -59,3 +59,16 @@ function viewFlight(flightId) {
         modal.modal('toggle');
     });
 }
+
+function bookFlight() {
+    var modal = $('#view-flight-modal');
+    var flightId = modal.find('.modal-title').html();
+        $.ajax({
+        method: "POST",
+        url: `/api/flight/${flightId}/book/`,
+        contentType: "application/json"
+    }).done(function(data) {
+        console.log(data);
+        alert('Booked!');
+    });
+}

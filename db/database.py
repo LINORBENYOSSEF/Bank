@@ -37,9 +37,12 @@ class Database(object):
             return None
         return self._adapter.dict_to_obj(result, data_type)
 
-    def update_one(self, value: T, key_column: str, session=None):
-        value_dict = self._adapter.obj_to_dict(value)
-        collection = self._db.get_collection(value.__class__.__name__)
+    def update_one(self, value: T, key_column: str, data_type=None, session=None):
+        if data_type is None:
+            data_type = value.__class__
+
+        value_dict = self._adapter.obj_to_dict(value, data_type=data_type)
+        collection = self._db.get_collection(data_type.__name__)
         collection.update_one({key_column: value_dict[key_column]},
                               {"$set": value_dict}, session=session)
 
