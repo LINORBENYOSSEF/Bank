@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from werkzeug.security import generate_password_hash
 from flask import Flask
 from flask_login import LoginManager, current_user
 
@@ -36,7 +37,7 @@ def create_app():
     @app.context_processor
     def inject_user():
         if current_user.is_authenticated:
-            return dict(login=current_user.username)
+            return dict(login=current_user.username, is_admin=current_user.is_admin)
         else:
             return dict()
 
@@ -44,6 +45,17 @@ def create_app():
 
 
 if __name__ == "__main__":
+    admin = db.find_one(User, 'id', '0')
+    if admin is None:
+        admin = User(
+            id='0',
+            username='admin',
+            password=generate_password_hash('admin', method='sha256'),
+            is_admin=True
+        )
+        db.add(admin)
+
+
     app = create_app()
     # Testing secret key
     app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'

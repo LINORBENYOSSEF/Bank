@@ -15,7 +15,6 @@ class Airline(Model):
 
 
 class Location(Model):
-    code = Column(str)
     city = Column(str)
     country = Column(str)
 
@@ -38,6 +37,7 @@ class User(UserMixin, Model):
     username = Column(str)
     password = Column(str)
     passenger_info = Column(Passenger)
+    is_admin = Column(bool)
 
 
 class Flight(Model):

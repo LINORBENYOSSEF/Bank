@@ -1,9 +1,8 @@
 
 function flightHtml(flight) {
     return `
-    <div class="card bg-secondary">
-        <div name="flight-root" class="card-body" data-flight-id="${flight.id}"
-            onclick="viewFlight('${flight.id}')">
+    <div class="card bg-secondary" data-flight-id="${flight.id}">
+        <div name="flight-root" class="card-body" onclick="viewFlight('${flight.id}')">
             <h6 class="side-by-side-header">
                 ${flight.departure.city}, ${flight.departure.country} ->
                 ${flight.destination.city}, ${flight.destination.country}
@@ -58,6 +57,10 @@ function loadFlights(offset,
     });
 }
 
+function openAddFlightModal() {
+    var modal = $('#add-flight-modal');
+    modal.modal('toggle');
+}
 
 function viewFlight(flightId) {
     $.ajax({
@@ -77,6 +80,44 @@ function viewFlight(flightId) {
     });
 }
 
+function addFlight() {
+    var modal = $('#add-flight-modal');
+
+    var airlineName = $('#airline-name').val();
+    var departureCity = $('#departure-city').val();
+    var departureCountry = $('#departure-country').val();
+    var destinationCity = $('#destination-city').val();
+    var destinationCountry = $('#destination-country').val();
+    var datetime = $('#datetime').val();
+    var ticketCost = $('#ticket-cost').val();
+
+    $.ajax({
+        method: "POST",
+        url: `/api/flight/`,
+        contentType: "application/json",
+        data: JSON.stringify({
+            airline: {
+                name: airlineName
+            },
+            departure_time: datetime,
+            departure: {
+                city: departureCity,
+                country: departureCountry
+            },
+            destination: {
+                city: destinationCity,
+                country: destinationCountry
+            },
+            ticket_cost: ticketCost
+        })
+    }).done(function(data) {
+        modal.modal('toggle');
+
+        var container = $('#flights-container');
+        container.append(flightHtml(data));
+    });
+}
+
 function bookFlight() {
     var modal = $('#view-flight-modal');
     var flightId = modal.find('.modal-title').html();
@@ -89,7 +130,23 @@ function bookFlight() {
         alert('Booked!');
     }).fail(function(xhr, ajaxOptions, thrownError) {
         alert('Error Booking');
-    });;
+    });
+}
+
+function deleteFlight() {
+    var modal = $('#view-flight-modal');
+    var flightId = modal.find('.modal-title').html();
+    $.ajax({
+        method: "DELETE",
+        url: `/api/flight/${flightId}/`,
+        contentType: "application/json"
+    }).done(function(data) {
+        modal.modal('toggle');
+
+        var container = $('#flights-container');
+        var flight = container.find(`div[data-flight-id="${flightId}"]`);
+        flight.remove();
+    });
 }
 
 function loadBookedFlights() {

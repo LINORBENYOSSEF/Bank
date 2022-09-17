@@ -6,7 +6,8 @@ from flask_login import login_required, current_user
 from app_db import db
 from model.models import Flight, User
 from model.schemas import FlightSchema, BookedFlightSchema
-from db.operations import book_flight as db_book_flight, OverbookException
+from db.operations import book_flight as db_book_flight, delete_flight as do_delete_flight, \
+    OverbookException
 
 flights_api = Blueprint('flights_api', __name__)
 
@@ -64,3 +65,18 @@ def book_flight(flight_id):
         return '', HTTPStatus.OK
     except OverbookException:
         return 'overbooked', HTTPStatus.BAD_REQUEST
+
+
+@flights_api.route('/<flight_id>/', methods=["DELETE"])
+@login_required
+def delete_flight(flight_id):
+    if not current_user.is_admin:
+        return '', HTTPStatus.UNAUTHORIZED
+
+    flight = db.find_one(Flight, 'id', flight_id)
+    if flight is None:
+        return 'No such flight', HTTPStatus.NOT_FOUND
+
+    do_delete_flight(db, flight)
+
+    return '', HTTPStatus.OK

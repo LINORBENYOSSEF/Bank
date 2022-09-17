@@ -11,6 +11,9 @@ class Adapter(object):
         fields = Model.get_columns(obj_type)
         obj = obj_type()
         for name, field_type in fields:
+            if name not in data:
+                continue
+
             value = data[name]
             if isinstance(value, dict):
                 value = self.dict_to_obj(value, field_type)
