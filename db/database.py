@@ -12,16 +12,22 @@ class Database(object):
 
     def __init__(self):
         self._client = MongoClient()
-        self._db = self._client.get_database('bank')
+        self._db = self._client.get_database('test-flightmanager-1')
         self._adapter = Adapter()
 
     def add(self, value: T, session=None):
         collection = self._db.get_collection(value.__class__.__name__)
-        collection.insert_one(self._adapter.obj_to_dict(value), session=session)
+        raw = self._adapter.obj_to_dict(value)
+        collection.insert_one(raw, session=session)
 
-    def get_all(self, data_type: Type[T], session=None):
+    def get_all(self, data_type: Type[T], session=None, offset=None, limit=None):
         collection = self._db.get_collection(data_type.__name__)
         results = collection.find(session=session)
+        if offset is not None:
+            results = results.skip(offset)
+        if limit is not None:
+            results = results.limit(limit)
+
         return self._adapter.dict_list_to_obj(list(results), data_type)
 
     def find_one(self, data_type: Type[T], column: str, value, session=None) -> Optional[T]:

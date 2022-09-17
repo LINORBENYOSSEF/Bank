@@ -37,7 +37,7 @@ class Adapter(object):
         fields = Model.get_columns(data.__class__)
         for name, field_type in fields:
             value = getattr(data, name)
-            if isinstance(value, dict):
+            if isinstance(value, Model):
                 value = self.obj_to_dict(value)
             if isinstance(value, list):
                 value = self.obj_list_to_dict(value)
