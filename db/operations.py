@@ -1,41 +1,32 @@
-from datetime import datetime
 from db.database import Database
-from model.account import Account, Transaction
+from model.models import User, Flight
 
 
-def do_transaction(db: Database, src_account: Account, dst_account_number: int, amount: float):
+class OverbookException(Exception):
+    pass
+
+
+def book_flight(db: Database, user: User, flight: Flight):
     with db.do_transaction() as session:
         try:
-            if src_account.balance < amount:
-                raise ValueError('not enough balance to perform transaction')
+            if len(flight.passengers) + 1 >= flight.plane.capacity:
+                raise OverbookException()
 
-            dst_account = db.find_one(Account, 'account_number', dst_account_number)
-            if dst_account is None:
-                raise ValueError(f"no such account: {dst_account_number}")
+            user.passenger_info.bookings.append(User.Passenger.Booking(
+                flight_id=flight.id,
+                paid=flight.ticket_cost,
+                airline=flight.airline,
+                destination=flight.destination,
+                departure=flight.departure
+            ))
+            db.update_one(user, 'id', session=session, data_type=User)
 
-            now = datetime.now()
-
-            src_transaction = Transaction()
-            src_transaction.amount = amount
-            src_transaction.dest_account = dst_account.account_number
-            src_transaction.datetime = now
-            src_transaction.direction = 'OUT'
-
-            src_account.balance -= amount
-            src_account.transactions.append(src_transaction)
-
-            db.update_one(src_account, 'account_number', session=session)
-
-            dst_transaction = Transaction()
-            dst_transaction.amount = amount
-            dst_transaction.dest_account = src_account.account_number
-            dst_transaction.datetime = now
-            dst_transaction.direction = 'IN'
-
-            dst_account.balance -= amount
-            dst_account.transactions.append(dst_transaction)
-
-            db.update_one(dst_account, 'account_number', session=session)
+            flight.passengers.append(Flight.Passenger(
+                id=user.id,
+                first_name=user.passenger_info.first_name,
+                last_name=user.passenger_info.last_name
+            ))
+            db.update_one(flight, 'id', session=session, data_type=Flight)
 
             session.commit_transaction()
         except Exception:

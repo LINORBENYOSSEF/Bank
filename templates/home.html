@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app.css') }}">
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script type="text/javascript">
+var currentOffset = 0;
+var limit = 15;
+
+function flightsLoadedCallback(loadedCount) {
+    currentOffset += loadedCount;
+}
+
+$(document).ready(function(){
+    $(window).scroll(function() {
+       if($(window).scrollTop() + $(window).height() == $(document).height()) {
+            loadFlights(currentOffset, limit, false, flightsLoadedCallback);
+       }
+    });
+
+    loadFlights(0, limit, false, flightsLoadedCallback);
+});
+</script>
+{% endblock %}
+{% block body %}
+<div class="row padding">
+    <div class="col-12">
+        <!-- all flights -->
+        <div id="flights-container" class="card-columns">
+        </div>
+    </div>
+</div>
+
+<!-- View Flight Modal -->
+<div id="view-flight-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div id="view-card-header" class="modal-header">
+            <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body mx-3">
+            <div class="mb-2">
+                <h5>Departs At</h5>
+                <input type="text" class="form-control" name="time-field" readonly>
+            </div>
+            <div class="mb-2">
+                <h5>Departure</h5>
+                <input type="text" class="form-control" name="departure-field" readonly>
+            </div>
+            <div class="mb-2">
+                <h5>Destination</h5>
+                <input type="text" class="form-control" name="destination-field" readonly>
+            </div>
+            <div class="mb-2">
+                <h5>Ticket</h5>
+                <input type="text" class="form-control" name="price-field" readonly>
+            </div>
+            {% if login is defined %}
+            <button type="submit" class="btn btn-primary mb-2" onclick="bookFlight()">Book</button>
+            {% else %}
+            <button type="submit" class="btn btn-primary mb-2" disabled="disabled">Book</button>
+            <div class="d-flex justify-content-center links">
+                Sign in to book flights &nbsp; <a href="/loging">Sign In</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

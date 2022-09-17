@@ -1,20 +1,31 @@
-import datetime
+import uuid
 
-from db.database import Database
-from model.account import Account, Transaction
+from app_db import db
+from model.models import *
 
+print(db.get_all(User))
+print(db.get_all(Flight))
 
-db = Database()
+"""
+db.add(Flight(
+    id=str(uuid.uuid4()),
+    airline=Airline(name='EL-AL'),
+    plane=Plane(manufacturer='Boeing', model='747', capacity=100),
+    passengers=[],
+    departure_time=datetime.now(),
+    departure=Location(code='MUC', city='Munich', country='Germany'),
+    destination=Location(code='NY', city='New York', country='US'),
+    ticket_cost=150
+))
 
-#account = Account(account_number=554, name='moses', balance=3.11, credit_frame=12, transactions=list())
-#print(dir(account))
-
-#transaction = Transaction(dest_account=222, amount=1, datetime=datetime.datetime.now(), direction='IN')
-#account.transactions.append(transaction)
-
-#transaction = Transaction(dest_account=222, amount=1, datetime=datetime.datetime.now(), direction='OUT')
-#account.transactions.append(transaction)
-
-#db.add(account)
-#print(db.get_all(Account))
-#print(db.find_one(Account, 'account_number', 555))
+db.add(Flight(
+    id=str(uuid.uuid4()),
+    airline=Airline(name='British Airways'),
+    plane=Plane(manufacturer='Boeing', model='747', capacity=100),
+    passengers=[],
+    departure_time=datetime.now(),
+    departure=Location(code='LON', city='London', country='UK'),
+    destination=Location(code='MUC', city='Munich', country='Germany'),
+    ticket_cost=150
+))
+"""
