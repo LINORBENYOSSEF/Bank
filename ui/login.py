@@ -31,7 +31,7 @@ class LoginDisplay(Display):
         form_layout = QFormLayout()
         form_layout.setAlignment(Qt.AlignCenter)
 
-        label_size = QSize(70, 20)
+        label_size = QSize(120, 20)
         field_size = QSize(170, 30)
 
         label = QLabel('Account Number')

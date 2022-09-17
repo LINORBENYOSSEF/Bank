@@ -27,10 +27,11 @@ class AccountDisplay(Display):
         self.newtrans_button.clicked.connect(self._newtrans)
 
         root_layout = QVBoxLayout()
+        root_layout.setAlignment(Qt.AlignCenter)
         root_layout.addWidget(self._top, alignment=Qt.AlignTop)
         root_layout.addLayout(account_data)
         root_layout.addWidget(self._transaction_history_layout, alignment=Qt.AlignCenter)
-        root_layout.addWidget(self.newtrans_button, alignment=Qt.AlignBottom)
+        root_layout.addWidget(self.newtrans_button, alignment=Qt.AlignCenter)
         self.setLayout(root_layout)
 
     def prepare_show(self):
@@ -46,7 +47,7 @@ class AccountDisplay(Display):
         form_layout = QFormLayout()
         form_layout.setAlignment(Qt.AlignCenter)
 
-        label_size = QSize(70, 20)
+        label_size = QSize(120, 20)
         field_size = QSize(170, 30)
 
         label = QLabel('Account Number')

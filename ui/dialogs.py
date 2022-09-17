@@ -14,3 +14,13 @@ def show_error_dialog(parent, error: Exception):
     dialog.setDetailedText('\n '.join(backtrace))
 
     dialog.exec()
+
+
+def show_message_dialog(parent, message: str):
+    dialog = QMessageBox(parent)
+    dialog.setIcon(QMessageBox.Ok)
+    dialog.setText(message)
+    dialog.setWindowTitle('Message')
+    dialog.setStandardButtons(QMessageBox.Ok)
+
+    dialog.exec()
