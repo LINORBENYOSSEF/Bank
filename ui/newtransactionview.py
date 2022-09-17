@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QFormLayout, QLineEdit, QLabel, QVBoxLayout, QPushBu
 from consts import LABEL_STYLE, BUTTON_SIZE_3
 from db.authentication import Authentication
 from db.database import Database
-from db.transaction import do_transaction
+from db.operations import do_transaction
 from ui.shared import TopFrame
 from ui.window import Display
 from ui.dialogs import show_error_dialog, show_message_dialog

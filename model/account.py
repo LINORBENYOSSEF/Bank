@@ -14,5 +14,4 @@ class Account(Model):
     account_number = Column(int)
     name = Column(str)
     balance = Column(float)
-    credit_frame = Column(float)
     transactions = Column(Transaction, is_many=True)
