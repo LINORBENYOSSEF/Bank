@@ -33,3 +33,12 @@ class FlightSchema(Schema):
         db.add(flight)
 
         return flight
+
+
+class BookedFlightSchema(Schema):
+    flight_id = fields.Str(dump_only=True)
+    airline = fields.Nested(AirlineSchema)
+    departure_time = fields.DateTime()
+    departure = fields.Nested(LocationSchema)
+    destination = fields.Nested(LocationSchema)
+    paid = fields.Float()

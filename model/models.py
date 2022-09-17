@@ -25,6 +25,7 @@ class User(UserMixin, Model):
         class Booking(Model):
             flight_id = Column(str)
             paid = Column(float)
+            departure_time = Column(datetime)
             airline = Column(Airline)
             departure = Column(Location)
             destination = Column(Location)

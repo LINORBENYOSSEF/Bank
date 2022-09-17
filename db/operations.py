@@ -2,9 +2,16 @@ from db.database import Database
 from model.models import User, Flight
 
 
+class OverbookException(Exception):
+    pass
+
+
 def book_flight(db: Database, user: User, flight: Flight):
     with db.do_transaction() as session:
         try:
+            if len(flight.passengers) + 1 >= flight.plane.capacity:
+                raise OverbookException()
+
             user.passenger_info.bookings.append(User.Passenger.Booking(
                 flight_id=flight.id,
                 paid=flight.ticket_cost,

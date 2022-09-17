@@ -10,6 +10,23 @@ function flightHtml(flight) {
             </h6>
             <div>${flight.airline.name}</div>
             <div>${flight.ticket_cost} $</div>
+            <div>${new Date(flight.departure_time).toLocaleString()}</div>
+        </div>
+    </div>
+    `;
+}
+
+function bookedFlightHtml(flight) {
+    return `
+    <div class="card bg-secondary">
+        <div name="flight-root" class="card-body" data-flight-id="${flight.id}">
+            <h6 class="side-by-side-header">
+                ${flight.departure.city}, ${flight.departure.country} ->
+                ${flight.destination.city}, ${flight.destination.country}
+            </h6>
+            <div>${flight.airline.name}</div>
+            <div>${flight.paid} $</div>
+            <div>${new Date(flight.departure_time).toLocaleString()}</div>
         </div>
     </div>
     `;
@@ -63,12 +80,26 @@ function viewFlight(flightId) {
 function bookFlight() {
     var modal = $('#view-flight-modal');
     var flightId = modal.find('.modal-title').html();
-        $.ajax({
+    $.ajax({
         method: "POST",
         url: `/api/flight/${flightId}/book/`,
         contentType: "application/json"
     }).done(function(data) {
         console.log(data);
         alert('Booked!');
+    }).fail(function(xhr, ajaxOptions, thrownError) {
+        alert('Error Booking');
+    });;
+}
+
+function loadBookedFlights() {
+    $.ajax({
+        method: "GET",
+        url: "/api/flight/booked/",
+        contentType: "application/json"
+    }).done(function(data) {
+        $.each(data, function(i, item) {
+            $('#flights-container').append(bookedFlightHtml(item));
+        });
     });
 }

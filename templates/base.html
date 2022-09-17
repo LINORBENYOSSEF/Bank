@@ -18,7 +18,13 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+        <form class="form-inline ml-auto" action="/" method="get">
+            <input type="submit" class="btn btn-outline-light" value="All Flights">
+        </form>
         {% if login is defined %}
+        <form class="form-inline ml-auto" action="/booked" method="get">
+            <input type="submit" class="btn btn-outline-light" value="Booked Flights">
+        </form>
         <form class="form-inline ml-auto" action="/logout" method="post">
             <input type="submit" class="btn btn-outline-light" value="Logout">
         </form>
