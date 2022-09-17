@@ -32,3 +32,22 @@ def book_flight(db: Database, user: User, flight: Flight):
         except Exception:
             session.abort_transaction()
             raise
+
+
+def delete_flight(db: Database, flight: Flight):
+    with db.do_transaction() as session:
+        try:
+            db.delete_one(flight, 'id', session=session)
+
+            for user in db.get_all(User, session=session):
+                if user.passenger_info is None or user.passenger_info.bookings is None:
+                    continue
+
+                user.passenger_info.bookings = [booking for booking in user.passenger_info.bookings
+                                                if booking.flight_id != flight.id]
+                db.update_one(user, 'id', user.id, session=session)
+
+            session.commit_transaction()
+        except Exception:
+            session.abort_transaction()
+            raise

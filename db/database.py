@@ -12,7 +12,7 @@ class Database(object):
 
     def __init__(self):
         self._client = MongoClient()
-        self._db = self._client.get_database('test-flightmanager-1')
+        self._db = self._client.get_database('test-flightmanager-2')
         self._adapter = Adapter()
 
     def add(self, value: T, session=None):
@@ -45,6 +45,14 @@ class Database(object):
         collection = self._db.get_collection(data_type.__name__)
         collection.update_one({key_column: value_dict[key_column]},
                               {"$set": value_dict}, session=session)
+
+    def delete_one(self, value: T, key_column: str, data_type=None, session=None):
+        if data_type is None:
+            data_type = value.__class__
+
+        value_dict = self._adapter.obj_to_dict(value, data_type=data_type)
+        collection = self._db.get_collection(data_type.__name__)
+        collection.delete_one({key_column: value_dict[key_column]}, session=session)
 
     @contextmanager
     def do_transaction(self):
