@@ -76,7 +76,8 @@
   ```
         rs.add('127.0.0.1:27018')
   ```
-		- the ip is loopback, the port should match to one used to start the secondary instance
+  
+	- the ip is loopback, the port should match to one used to start the secondary instance
 	- check everything is set up
 		- run 
       
